@@ -79,7 +79,6 @@ def get_sd():
 def get_uptime():
     # get the uptime in seconds
     uptime_seconds = uptime.uptime()
-
     # convert the uptime to hours, minutes, and seconds
     hours, minutes = divmod(uptime_seconds, 3600)
     minutes, seconds = divmod(minutes, 60)
@@ -87,7 +86,7 @@ def get_uptime():
     # format the uptime as a string
     uptime_str = f"{int(hours)}h {int(minutes)}m {int(seconds)}s"
 
-    return uptime_str
+    return uptime_str, int(uptime_seconds)
 
 def get_ip_addresses():
     # get a list of all the network interfaces
@@ -135,7 +134,8 @@ client.loop_start()
 
 to_sent = {
     "temp": read_temperature(),
-    "uptime": get_uptime(),
+    "uptime": get_uptime()[0],
+    "uptime_sec": get_uptime()[1],
     "cpu_usage": get_cpu_usage(),
     "services": serv_res,
     "ip": get_ip_addresses(),
@@ -144,7 +144,9 @@ to_sent = {
     "sd_free": "{:.2f}".format(get_free_sd()),
     "total_sd": "{:.2f}".format(get_sd())
 }
+
 print(to_sent)
+
 json_string=json.dumps(to_sent);
 client.publish(data["mqtt_server"]["full_topic"],json_string)
 time.sleep(1)
