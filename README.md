@@ -6,6 +6,7 @@ It uses a json file called "settings.json" as config file and it can monitor the
 
 - Temperature
 - Uptime
+- Uptime in seconds
 - CPU Usage
 - Services
 - Ip addresses of the network interfaces
@@ -59,7 +60,8 @@ The script send a json object with the following format
 ```
 {
   "temp": 40.8,
-  "uptime": "27h 8m 51s",
+  "uptime": "99h 8m 48s",
+  "uptime_sec": "356928"
   "cpu_usage": [
     0,
     22.2,
