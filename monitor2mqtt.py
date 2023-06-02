@@ -44,7 +44,12 @@ def check_service_status(service_name):
     command = ["systemctl", "is-active", service_name]
     try:
         output = subprocess.check_output(command, stderr=subprocess.STDOUT)
-        return output.decode("utf-8").strip()
+        print(output.decode("utf-8").strip())
+        if output.decode("utf-8").strip() == 'active':
+                output = True
+        else:
+                output = False
+        return output
     except subprocess.CalledProcessError as error:
         return error.output.decode("utf-8").strip()
 
@@ -112,15 +117,15 @@ with open(file_path, 'r') as f:
 
 test=[]
 if 'service-monitor' in data:
-	# create a new JSON object for each service
-	for service in data['service-monitor']:
-		test.append(service)
+        # create a new JSON object for each service
+        for service in data['service-monitor']:
+                test.append(service)
 
 serv_res = {}
 for services in test:
-	serv_res[services] = {
-		"status": check_service_status(data['service-monitor'][services]["name"])
-	}
+        serv_res[services] = {
+                "status": check_service_status(data['service-monitor'][services]["name"])
+        }
 
 # Create a new MQTT client
 client = mqtt.Client()
