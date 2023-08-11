@@ -96,6 +96,16 @@ def get_uptime():
 def get_ip_addresses():
     # get a list of all the network interfaces
     interfaces = netifaces.interfaces()
+    net_counters = psutil.net_io_counters(pernic=True)
+
+    if "eth0" not in net_counters:
+        print("Interface not found.")
+        bytes_sent = 0
+        bytes_received = 0
+
+    interface_data = net_counters["eth0"]
+    bytes_sent = round(interface_data.bytes_sent/ (1024 ** 2), 2)
+    bytes_received = round(interface_data.bytes_recv/ (1024 ** 2),2)
 
     # create an empty dictionary to store the IP addresses
     ip_addresses = {}
@@ -108,7 +118,7 @@ def get_ip_addresses():
             for link in iface_data[netifaces.AF_INET]:
                 ip_addresses[interface] = link['addr']
 
-    return ip_addresses
+    return ip_addresses, bytes_sent, bytes_received
 
 # Open the JSON file
 with open(file_path, 'r') as f:
@@ -137,13 +147,18 @@ client.connect(data["mqtt_server"]["host"], data["mqtt_server"]["port"])
 
 client.loop_start()
 
+ip_addresses, bytes_sent, bytes_received = get_ip_addresses()
+
+
 to_sent = {
     "temp": read_temperature(),
     "uptime": get_uptime()[0],
     "uptime_sec": get_uptime()[1],
     "cpu_usage": get_cpu_usage(),
     "services": serv_res,
-    "ip": get_ip_addresses(),
+    "ip": ip_addresses,
+    "tx": bytes_sent,
+    "rx": bytes_received,
     "free_ram": "{:.2f}".format(get_free_ram()),
     "total_ram": "{:.2f}".format(get_ram()),
     "sd_free": "{:.2f}".format(get_free_sd()),
