@@ -7,6 +7,7 @@ import json
 import shutil
 import uptime
 import netifaces
+import os
 
 # Get the directory containing the script
 script_dir = os.path.dirname(__file__)
