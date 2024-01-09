@@ -8,18 +8,6 @@ import shutil
 import uptime
 import netifaces
 import os
-import requests
-
-url = 'https://checkip.amazonaws.com'
-response = requests.get(url)
-
-if response.status_code == 200:
-    print("Your external IP address is:", response.text.strip())
-    publicip = response.text.strip()
-else:
-    print(f"Error: Unable to fetch external IP. Status code: {response.status_code}")
-    publicip = "unknown"
-
 
 # Get the directory containing the script
 script_dir = os.path.dirname(__file__)
@@ -174,8 +162,7 @@ to_sent = {
     "free_ram": "{:.2f}".format(get_free_ram()),
     "total_ram": "{:.2f}".format(get_ram()),
     "sd_free": "{:.2f}".format(get_free_sd()),
-    "total_sd": "{:.2f}".format(get_sd()),
-    "public_ip": publicip
+    "total_sd": "{:.2f}".format(get_sd())
 }
 
 print(to_sent)
